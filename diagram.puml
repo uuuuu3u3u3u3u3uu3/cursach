@@ -1,0 +1,126 @@
+@startuml
+
+' ---- Стереотипы ----
+!define MODEL <<Model>>
+!define SERVICE <<Service>>
+!define VIEWMODEL <<ViewModel>>
+!define VIEW <<View>>
+!define ENUM <<enumeration>>
+
+' ---- Модели ----
+class Order MODEL {
+  + Id: int
+  + Customer: string
+  + Date: DateTime
+  + Status: OrderStatus
+  + Total: decimal
+  + Paid: decimal
+  + IsPaid: bool
+  + Items: List<OrderItem>
+  + PayFullAmount()
+}
+
+class OrderItem MODEL {
+  + ProductId: int
+  + Product: int
+  + Name: string
+  + Price: decimal
+  + Quantity: int
+}
+
+class Product MODEL {
+  + Id: int
+  + Name: string
+  + Price: decimal
+  + Stock: int
+}
+
+' ---- Перечисление ----
+enum OrderStatus {
+  New
+  Paid
+  Completed
+}
+
+' ---- Сервисы ----
+class DataService SERVICE {
+  - _orders: List<Order>
+  - _products: List<Product>
+  - _nextOrderId: int
+  - _nextProductId: int
+  + GetOrders(): List<Order>
+  + AddOrder(order: Order)
+  + UpdateOrder(order: Order)
+  + GetProducts(): List<Product>
+  + GetProduct(id: int): Product
+  + AddProduct(product: Product)
+  + UpdateProduct(product: Product)
+  + SaveToXml()
+  + LoadFromXml()
+}
+
+class WarehouseService SERVICE {
+  - _dataService: DataService
+  + AddProductToOrder(order: Order, product: Product, quantity: int): (bool, string)
+  + PayOrder(order: Order): (bool, string)
+  + ShipOrder(order: Order): (bool, string)
+}
+
+' ---- ViewModel ----
+class MainViewModel VIEWMODEL {
+  - _dataService: DataService
+  - _warehouseService: WarehouseService
+  - _selectedOrder: Order
+  - _selectedProduct: Product
+  - _statusMessage: string
+  + Orders: ObservableCollection<Order>
+  + Products: ObservableCollection<Product>
+  + SelectedOrder: Order
+  + SelectedProduct: Product
+  + StatusMessage: string
+  + CreateOrder()
+  + AddProductToOrder()
+  + PayOrder()
+  + ShipOrder()
+  + AddNewProduct()
+  + UpdateSelectedProduct()
+  + SaveData()
+  + LoadDataFromFile()
+}
+
+' ---- View ----
+class MainWindow VIEW {
+  - _viewModel: MainViewModel
+  + InitializeComponent()
+  + CreateOrderClick()
+  + AddProductClick()
+  + PayOrderClick()
+  + ShipOrderClick()
+  + AddNewProductClick()
+  + UpdateProductClick()
+  + SaveDataClick()
+  + LoadDataClick()
+  + UpdateOrderDetails()
+  + UpdateProductEditFields()
+}
+
+' Композиция
+Order *-- OrderItem
+
+' Агрегация
+DataService o--  Order
+DataService o--  Product
+
+' Ассоциация
+WarehouseService --> DataService
+MainViewModel --> DataService
+MainViewModel --> WarehouseService
+MainWindow --> MainViewModel
+
+' Зависимости
+Order ..> OrderStatus
+WarehouseService ..> Order
+WarehouseService ..> Product
+DataService ..> "XML File"
+
+@enduml
