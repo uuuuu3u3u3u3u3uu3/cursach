@@ -1,4 +1,4 @@
-@startuml
+@startuml cursach
 
 ' ---- Стереотипы ----
 !define MODEL <<Model>>
@@ -6,6 +6,29 @@
 !define VIEWMODEL <<ViewModel>>
 !define VIEW <<View>>
 !define ENUM <<enumeration>>
+!define INTERFACE <<interface>>
+
+' ---- Интерфейсы ----
+interface IEntity {
+  + Id: int {get; set}
+}
+
+interface IWarehouseOperation {
+  + ValidateStock(product: Product, requiredQuantity: int): (bool, string)
+  + UpdateStock(product: Product, quantity: int)
+}
+
+interface IDataService {
+  + GetOrders(): List<Order>
+  + AddOrder(order: Order)
+  + UpdateOrder(order: Order)
+  + GetProducts(): List<Product>
+  + GetProduct(id: int): Product
+  + AddProduct(product: Product)
+  + UpdateProduct(product: Product)
+  + SaveToXml()
+  + LoadFromXml()
+}
 
 ' ---- Модели ----
 class Order MODEL {
@@ -22,7 +45,6 @@ class Order MODEL {
 
 class OrderItem MODEL {
   + ProductId: int
-  + Product: int
   + Name: string
   + Price: decimal
   + Quantity: int
@@ -33,6 +55,12 @@ class Product MODEL {
   + Name: string
   + Price: decimal
   + Stock: int
+}
+
+class Supplier MODEL {
+  + Id: int
+  + Name: string
+  + Phone: string
 }
 
 ' ---- Перечисление ----
@@ -61,6 +89,8 @@ class DataService SERVICE {
 
 class WarehouseService SERVICE {
   - _dataService: DataService
+  + ValidateStock(product: Product, requiredQuantity: int): (bool, string)
+  + UpdateStock(product: Product, quantity: int)
   + AddProductToOrder(order: Order, product: Product, quantity: int): (bool, string)
   + PayOrder(order: Order): (bool, string)
   + ShipOrder(order: Order): (bool, string)
@@ -72,11 +102,17 @@ class MainViewModel VIEWMODEL {
   - _warehouseService: WarehouseService
   - _selectedOrder: Order
   - _selectedProduct: Product
+  - _newProductName: string
+  - _newProductPrice: decimal
+  - _newProductStock: int
   - _statusMessage: string
   + Orders: ObservableCollection<Order>
   + Products: ObservableCollection<Product>
   + SelectedOrder: Order
   + SelectedProduct: Product
+  + NewProductName: string
+  + NewProductPrice: decimal
+  + NewProductStock: int
   + StatusMessage: string
   + CreateOrder()
   + AddProductToOrder()
@@ -84,8 +120,10 @@ class MainViewModel VIEWMODEL {
   + ShipOrder()
   + AddNewProduct()
   + UpdateSelectedProduct()
+  + DeleteOrder()
   + SaveData()
   + LoadDataFromFile()
+  + OnPropertyChanged(propertyName: string)
 }
 
 ' ---- View ----
@@ -96,20 +134,31 @@ class MainWindow VIEW {
   + AddProductClick()
   + PayOrderClick()
   + ShipOrderClick()
+  + DeleteOrderClick()
   + AddNewProductClick()
   + UpdateProductClick()
   + SaveDataClick()
   + LoadDataClick()
   + UpdateOrderDetails()
   + UpdateProductEditFields()
+  + OrdersList_SelectionChanged()
+  + ProductsList_SelectionChanged()
+  + CustomerTextBox_TextChanged()
 }
 
 ' Композиция
 Order *-- OrderItem
 
 ' Агрегация
-DataService o--  Order
-DataService o--  Product
+DataService o-- Order
+DataService o-- Product
+
+' Реализация интерфейсов
+Order ..|> IEntity
+Product ..|> IEntity
+Supplier ..|> IEntity
+WarehouseService ..|> IWarehouseOperation
+DataService ..|> IDataService
 
 ' Ассоциация
 WarehouseService --> DataService
@@ -121,6 +170,5 @@ MainWindow --> MainViewModel
 Order ..> OrderStatus
 WarehouseService ..> Order
 WarehouseService ..> Product
-DataService ..> "XML File"
 
 @enduml

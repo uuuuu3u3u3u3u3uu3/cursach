@@ -4,7 +4,7 @@ using cursach.Models;
 
 namespace cursach.Services;
 
-public class WarehouseService
+public class WarehouseService : IWarehouseOperation
 {
     private readonly DataService _dataService;
 
@@ -13,16 +13,32 @@ public class WarehouseService
         _dataService = dataService;
     }
 
-    public (bool success, string message) AddProductToOrder(Order order, Product product, int quantity = 1)
+    public (bool success, string message) ValidateStock(Product product, int requiredQuantity)
     {
         if (product.Stock <= 0)
         {
             return (false, $"Товара '{product.Name}' нет на складе");
         }
 
-        if (product.Stock < quantity)
+        if (product.Stock < requiredQuantity)
         {
             return (false, $"Недостаточно товара '{product.Name}' на складе. Доступно: {product.Stock} шт.");
+        }
+
+        return (true, "Достаточно товара на складе");
+    }
+
+    public void UpdateStock(Product product, int quantity)
+    {
+        product.Stock -= quantity;
+    }
+
+    public (bool success, string message) AddProductToOrder(Order order, Product product, int quantity = 1)
+    {
+        var validation = ValidateStock(product, quantity);
+        if (!validation.success)
+        {
+            return validation;
         }
 
         var existingItem = order.Items.FirstOrDefault(i => i.ProductId == product.Id);
@@ -94,16 +110,18 @@ public class WarehouseService
             {
                 return (false, $"Товар '{item.Name}' не найден на складе");
             }
-            if (product.Stock < item.Quantity)
+            
+            var validation = ValidateStock(product, item.Quantity);
+            if (!validation.success)
             {
-                return (false, $"Недостаточно товара '{item.Name}' на складе. Доступно: {product.Stock} шт., требуется: {item.Quantity} шт.");
+                return validation;
             }
         }
 
         foreach (var item in order.Items)
         {
             var product = _dataService.GetProduct(item.ProductId);
-            product!.Stock -= item.Quantity;
+            UpdateStock(product!, item.Quantity);
         }
 
         order.Status = OrderStatus.Completed;

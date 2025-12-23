@@ -213,6 +213,26 @@ public class MainViewModel : INotifyPropertyChanged
         LoadData();
         StatusMessage = "Данные загружены из data.xml";
     }
+    public void DeleteOrder()
+    {
+        if (SelectedOrder == null)
+        {
+            StatusMessage = "Выберите заказ для удаления";
+            return;
+        }
+
+        Orders.Remove(SelectedOrder);
+        
+        var allOrders = _dataService.GetOrders();
+        var orderToRemove = allOrders.FirstOrDefault(o => o.Id == SelectedOrder.Id);
+        if (orderToRemove != null)
+        {
+            allOrders.Remove(orderToRemove);
+        }
+        
+        SelectedOrder = null;
+        StatusMessage = "Заказ успешно удален";
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged(string? propertyName = null) => 

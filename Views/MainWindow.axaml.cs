@@ -191,6 +191,17 @@ public partial class MainWindow : Window
             _viewModel.SelectedProduct.Stock = stock;
         }
     }
+    private void DeleteOrderClick(object sender, RoutedEventArgs e)
+{
+    _viewModel.DeleteOrder();
+    var ordersList = this.FindControl<ListBox>("OrdersList");
+    if (ordersList != null)
+    {
+        ordersList.ItemsSource = null;
+        ordersList.ItemsSource = _viewModel.Orders;
+    }
+    UpdateOrderDetails();
+}
 
     private void UpdateOrderDetails()
     {

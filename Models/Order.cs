@@ -6,7 +6,7 @@ namespace cursach.Models;
 
 public enum OrderStatus { New, Paid, Completed }
 
-public class Order
+public class Order : IEntity
 {
     public int Id { get; set; }
     public string Customer { get; set; } = "";

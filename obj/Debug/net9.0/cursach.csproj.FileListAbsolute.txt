@@ -68,3 +68,4 @@
 /Users/ssssss/Documents/proga2/cursach/obj/Debug/net9.0/cursach.csproj.Up2Date
 /Users/ssssss/Documents/proga2/cursach/obj/Debug/net9.0/cursach.genruntimeconfig.cache
 /Users/ssssss/Documents/proga2/cursach/obj/Debug/net9.0/ref/cursach.dll
+/Users/ssssss/Documents/proga2/cursach/obj/Debug/net9.0/cursach.sourcelink.json

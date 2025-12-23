@@ -4,10 +4,11 @@
         Title="Система управления заказами" Width="1100" Height="700">
     
     <Grid ColumnDefinitions="300,*,300" Margin="10">
-        <!-- Левая панель - Заказы -->
+
         <StackPanel Grid.Column="0" Spacing="10">
             <TextBlock Text="Заказы" FontSize="16" FontWeight="Bold"/>
-            <Button Name="CreateOrderBtn" Content="➕ Новый заказ" Click="CreateOrderClick" Background="#27ae60" Foreground="White"/>
+            <Button Name="CreateOrderBtn" Content="Новый заказ" Click="CreateOrderClick" Background="#27ae60" Foreground="White"/>
+            <Button Name="DeleteOrderBtn" Content="Удалить заказ" Click="DeleteOrderClick" Background="#e74c3c" Foreground="White"/>
             
             <ListBox Name="OrdersList" Height="200" SelectionChanged="OrdersList_SelectionChanged">
                 <ListBox.ItemTemplate>
@@ -36,7 +37,7 @@
             </ListBox>
         </StackPanel>
 
-        <!-- Центральная панель - Детали заказа -->
+
         <StackPanel Grid.Column="1" Margin="20,0,20,0" Spacing="10">
             <TextBlock Text="Детали заказа" FontSize="16" FontWeight="Bold"/>
             
@@ -46,7 +47,7 @@
             <TextBlock Name="StatusText" FontSize="12"/>
             <TextBlock Name="ItemsCountText" FontSize="12"/>
 
-            <Button Name="AddProductBtn" Content="➕ Добавить выбранный товар" Click="AddProductClick" Background="#3498db" Foreground="White"/>
+            <Button Name="AddProductBtn" Content="Добавить выбранный товар" Click="AddProductClick" Background="#3498db" Foreground="White"/>
             
             <TextBlock Text="Товары в заказе:" FontWeight="Bold" Margin="0,10,0,0"/>
             <ListBox Name="OrderItemsList" Height="120">
@@ -62,22 +63,22 @@
             </ListBox>
 
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
-                <Button Name="PayOrderBtn" Content="💳 Клиент оплатил" Click="PayOrderClick" Background="#9b59b6" Foreground="White"/>
-                <Button Name="ShipOrderBtn" Content="🚚 Отгрузить заказ" Click="ShipOrderClick" Background="#e67e22" Foreground="White"/>
+                <Button Name="PayOrderBtn" Content="Клиент оплатил" Click="PayOrderClick" Background="#9b59b6" Foreground="White"/>
+                <Button Name="ShipOrderBtn" Content="Отгрузить заказ" Click="ShipOrderClick" Background="#e67e22" Foreground="White"/>
             </StackPanel>
 
-            <!-- Статус сообщение -->
+
             <Border Background="#070605" BorderBrush="#dee2e6" BorderThickness="1" CornerRadius="5" Margin="0,20,0,0" Padding="10">
                 <TextBlock Name="StatusMessageText" Text="{Binding StatusMessage}" FontSize="12" TextWrapping="Wrap"/>
             </Border>
             
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
-                <Button Name="SaveBtn" Content="💾 Сохранить данные" Click="SaveDataClick" Background="#2c3e50" Foreground="White"/>
-                <Button Name="LoadBtn" Content="📂 Загрузить данные" Click="LoadDataClick" Background="#34495e" Foreground="White"/>
+                <Button Name="SaveBtn" Content="Сохранить данные" Click="SaveDataClick" Background="#2c3e50" Foreground="White"/>
+                <Button Name="LoadBtn" Content="Загрузить данные" Click="LoadDataClick" Background="#34495e" Foreground="White"/>
             </StackPanel>
         </StackPanel>
 
-        <!-- Правая панель - Управление товарами -->
+
         <StackPanel Grid.Column="2" Spacing="10">
             <TextBlock Text="Управление товарами" FontSize="16" FontWeight="Bold"/>
             
@@ -85,13 +86,13 @@
             <TextBox Name="NewProductNameTextBox" Watermark="Название товара" TextChanged="NewProductNameTextBox_TextChanged"/>
             <TextBox Name="NewProductPriceTextBox" Watermark="Цена в рублях" TextChanged="NewProductPriceTextBox_TextChanged"/>
             <TextBox Name="NewProductStockTextBox" Watermark="Количество на складе" TextChanged="NewProductStockTextBox_TextChanged"/>
-            <Button Name="AddNewProductBtn" Content="➕ Добавить товар" Click="AddNewProductClick" Background="#27ae60" Foreground="White"/>
+            <Button Name="AddNewProductBtn" Content="Добавить товар" Click="AddNewProductClick" Background="#27ae60" Foreground="White"/>
             
             <TextBlock Text="Редактировать выбранный товар:" FontWeight="Bold" Margin="0,20,0,0"/>
             <TextBox Name="EditProductNameTextBox" Watermark="Название" TextChanged="EditProductNameTextBox_TextChanged"/>
             <TextBox Name="EditProductPriceTextBox" Watermark="Цена в рублях" TextChanged="EditProductPriceTextBox_TextChanged"/>
             <TextBox Name="EditProductStockTextBox" Watermark="Количество" TextChanged="EditProductStockTextBox_TextChanged"/>
-            <Button Name="UpdateProductBtn" Content="✏️ Сохранить изменения" Click="UpdateProductClick" Background="#3498db" Foreground="White"/>
+            <Button Name="UpdateProductBtn" Content="Сохранить изменения" Click="UpdateProductClick" Background="#3498db" Foreground="White"/>
         </StackPanel>
     </Grid>
 </Window>

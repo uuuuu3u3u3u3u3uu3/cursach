@@ -7,7 +7,20 @@ using cursach.Models;
 
 namespace cursach.Services;
 
-public class DataService
+public interface IDataService
+{
+    List<Order> GetOrders();
+    void AddOrder(Order order);
+    void UpdateOrder(Order order);
+    List<Product> GetProducts();
+    Product? GetProduct(int id);
+    void AddProduct(Product product);
+    void UpdateProduct(Product product);
+    void SaveToXml();
+    void LoadFromXml();
+}
+
+public class DataService : IDataService
 {
     private List<Order> _orders = new();
     private List<Product> _products = new();
@@ -22,13 +35,13 @@ public class DataService
     }
 
     public List<Order> GetOrders() => _orders;
-    
+
     public void AddOrder(Order order)
     {
         order.Id = _nextOrderId++;
         _orders.Add(order);
     }
-    
+
     public void UpdateOrder(Order order)
     {
         var index = _orders.FindIndex(o => o.Id == order.Id);
@@ -36,7 +49,7 @@ public class DataService
     }
 
     public List<Product> GetProducts() => _products;
-    
+
     public Product? GetProduct(int id) => _products.FirstOrDefault(p => p.Id == id);
 
     public void AddProduct(Product product)
@@ -63,14 +76,14 @@ public class DataService
     {
         var file = "data.xml";
         if (!File.Exists(file)) return;
-        
+
         using var reader = new StreamReader(file);
         var data = (DataWrapper?)new XmlSerializer(typeof(DataWrapper)).Deserialize(reader);
         if (data != null)
         {
             _orders = data.Orders;
             _products = data.Products;
-            
+
             _nextOrderId = _orders.Count > 0 ? _orders.Max(o => o.Id) + 1 : 1;
             _nextProductId = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 1;
         }
